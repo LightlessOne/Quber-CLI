@@ -1,0 +1,7 @@
+kind: "AtlasModuleContextDescriptor"
+apiVersion: "v1"
+paths:
+  input:
+    params: "./params.yaml"
+  output:
+    params: "./result.yaml"

@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "qubership_pipelines_common_library_cli_test"
+version = "0.0.1"
+description = "Qu"
+authors = ["Igor Lebedev <lebedev.light@gmail.com>"]
+readme = "README.md"
+packages = [{include = "qubership_pipelines_common_library_cli_test"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+qubership-pipelines-common-library = "*"
+
+[tool.poetry.group.test.dependencies]
+pytest = "^6.0.0"
+
+[tool.poetry.scripts]
+quber_cli = "qubership_pipelines_common_library_cli_test.__main__:cli"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
