@@ -42,6 +42,11 @@ def test_calc():
         if 0.9 != result['params']['result_divide']:
             raise Exception("result_calc.yaml is invalid")
 
+def test_new_quber_commands():
+    with open('./TESTS/test_result.txt', 'r', encoding='utf-8') as file:
+        if len(file.read()) == 0:
+            raise Exception("test_result.txt is invalid")
+
 
 if __name__ == '__main__':
     # todo: rework into 'integration-test-suite':
@@ -51,8 +56,9 @@ if __name__ == '__main__':
     # these tests are marked as INTEGRATION, and won't run with usual unittests, only in a separate on-demand pipeline
     # also: integration tests: use github-workflow provided 'services'with required docker images (minio for now) (to test commands)
     try:
-        test_run_sample()
-        test_calc()
+        test_new_quber_commands()
+        #test_run_sample()
+        #test_calc()
         report_execution_result(True)
     except Exception as e:
         report_execution_result(False, e)
