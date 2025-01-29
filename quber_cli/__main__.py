@@ -4,6 +4,9 @@ from quber_cli.minio_commands import ListMinioBucketObjectsCommand
 from quber_cli.sample_command import SampleStandaloneExecutionCommand, CalcCommand
 from qubership_pipelines_common_library.v1.execution.exec_logger import ExecutionLogger
 
+from quber_cli.umbrella_test.in_memory_context import create_execution_context
+from quber_cli.umbrella_test.umbrella_command import UmbrellaCommand
+
 DEFAULT_CONTEXT_FILE_PATH = 'context.yaml'
 
 
@@ -33,4 +36,9 @@ def __calc(context_path):
 @click.option('--context_path', required=True, default=DEFAULT_CONTEXT_FILE_PATH, type=str, help="Path to context")
 def __list(context_path):
     command = ListMinioBucketObjectsCommand(context_path)
+    command.run()
+
+@cli.command("umbrella-test")
+def __devtest():
+    command = UmbrellaCommand(folder_path="./RESULTS_FOLDER", input_params={"systems": {"gitlab": {"url": "https://gitlab.com"}}})
     command.run()
