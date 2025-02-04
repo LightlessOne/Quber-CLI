@@ -6,7 +6,7 @@ from pathlib import Path
 
 from qubership_pipelines_common_library.v1.execution.exec_command import ExecutionCommand
 from qubership_pipelines_common_library.v1.execution.exec_info import ExecutionInfo
-from qubership_pipelines_common_library.v1.git_client import GitClient
+from qubership_pipelines_common_library.v1.gitlab_client import GitlabClient
 
 
 class UmbrellaCommand(ExecutionCommand):
@@ -76,7 +76,7 @@ class RunGitlabPipelineCommand(ExecutionCommand):
 
     def _execute(self):
         self.context.logger.info("RunGitlabPipelineCommand - executing GitLab pipeline and fetching results...")
-        gitlab_client = GitClient(host=self.context.input_param_get("systems.gitlab.url"), username=None,
+        gitlab_client = GitlabClient(host=self.context.input_param_get("systems.gitlab.url"), username=None,
                             password=self.context.input_param_get("systems.gitlab.password"))
         pipeline_path = self.context.input_param_get("params.pipeline")
         pipeline_params = {
@@ -88,9 +88,8 @@ class RunGitlabPipelineCommand(ExecutionCommand):
         execution = gitlab_client.wait_pipeline_execution(
             execution=execution,
             timeout_seconds=60,
-            break_status_list=[GitClient.STATUS_SUCCESS, GitClient.STATUS_FAILED, GitClient.STATUS_CANCELLED, GitClient.STATUS_SKIPPED],
+            wait_seconds=5,
         )
-        execution.stop(execution.get_status()) # todo le: should probably stop inside 'wait_pipeline_execution'
         self.context.logger.info(f"Pipeline status after waiting: {execution.get_status()}")
         self._save_execution_info(execution)
         if execution.get_status() == "SUCCESS":
