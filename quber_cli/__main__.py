@@ -1,4 +1,4 @@
-import os, sys, logging, urllib3, click
+import os, sys, logging, click
 
 from quber_cli.minio_commands import ListMinioBucketObjectsCommand
 from quber_cli.sample_command import SampleStandaloneExecutionCommand, CalcCommand
@@ -13,7 +13,7 @@ def cli():
     logging.basicConfig(stream=sys.stdout, format=ExecutionLogger.DEFAULT_FORMAT, level=logging.INFO)
     current_path = os.path.dirname(os.path.abspath(__file__))
     sys.path.insert(0, current_path)
-    urllib3.disable_warnings()
+    #urllib3.disable_warnings()
 
 
 @cli.command("run-sample")

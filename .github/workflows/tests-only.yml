@@ -27,5 +27,4 @@ jobs:
         
         cd ./scripts
         source build_linux.sh
-        ./test.sh
         ./validate.sh

@@ -8,6 +8,6 @@ pack
 venv
 __pycache__/
 poetry.lock
-tests/**/logs/
-tests/**/temp/
+DATA/**/logs/
+DATA/**/temp/
 *.pyz

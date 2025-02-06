@@ -46,6 +46,6 @@ If done correctly - you'll be greeted with MiniO login form - use MINIO_ROOT_USE
 
 Use web-ui to create new bucket with name `test-bucket` and add few files into it's root
 
-Update [params for running Minio](../TESTS/minio/params.yaml) with your Minio IP and credentials
+Update [params for running Minio](../DATA/minio/params.yaml) with your Minio IP and credentials
 
 Then you can run `python quber_cli list-minio-files --context_path=./minio/context.yaml` - it should list objects in your bucket in `result.yaml`

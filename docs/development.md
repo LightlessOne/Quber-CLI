@@ -16,7 +16,7 @@ Library itself provides methods of working with context and params files.
 
 The most straightforward example is `SampleStandaloneExecutionCommand`, which is mapped to `@cli.command("run-sample")` CLI command.
 
-It expects to receive location of [`context.yaml` file](../TESTS/context.yaml) (or looks for it in working directory), which points to locations of [input parameters](../TESTS/params.yaml) and where to put resulting report.
+It expects to receive location of [`context.yaml` file](../DATA/context.yaml) (or looks for it in working directory), which points to locations of [input parameters](../DATA/params.yaml) and where to put resulting report.
 
 The usual `ExecutionCommand` lifecycle consists of
 - validating required input parameters (that will be automatically parsed from context)
@@ -36,7 +36,7 @@ There's also a separate python script ([check_test_results.py](../scripts/python
 
 Use (and modify) provided [test.sh](../scripts/test.sh) to run CLI and test your scenarios during development.
 
-The [TESTS](../TESTS) folder also contains examples of context/params configurations.
+The [DATA](../DATA) folder also contains examples of context/params configurations.
 
 In current configuration, it's expected to get `result.yaml` and `result_calc.yaml` files next to existing context with results of test commands.
 
