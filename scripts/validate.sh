@@ -1,5 +1,5 @@
 cd ..
 python -m venv .venv
 
-pip install -q pyyaml
-python ./scripts/python/check_test_results.py
+pip install -q pyyaml pytest
+python ./tests/run_test_suite.py

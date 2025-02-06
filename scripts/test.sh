@@ -1,4 +1,4 @@
-cd ../TESTS/
+cd ../DATA/
 python --version
 
 python quber_cli --help

@@ -9,7 +9,7 @@ pip install -q --target pack --no-compile --upgrade dist/quber_cli-0.0.1-py3-non
 # pip install python-minifier
 # pyminify pack/kubernetes/ --in-place --remove-literal-statements
 # pyminify pack/ --in-place --remove-literal-statements
-python -m zipapp pack -o ./TESTS/quber_cli.pyz --main=quber_cli.__main__:cli --compress
-unzip -q ./TESTS/quber_cli.pyz -d ./TESTS/quber_cli
+python -m zipapp pack -o ./DATA/quber_cli.pyz --main=quber_cli.__main__:cli --compress
+unzip -q ./DATA/quber_cli.pyz -d ./DATA/quber_cli
 
 echo Build done!

@@ -45,20 +45,20 @@ class UmbrellaCommand(ExecutionCommand):
             self.context.logger.info(f"first cmd exited with code={e}")
 
         # Run another child
-        self.context.logger.info("Running second RunGitlabPipelineCommand...")
-        input_params_for_gitlab["params"]["pipeline_params"]["TEST_FILE_NAME"] = "name_from_second.txt"
-        cmd2 = RunGitlabPipelineCommand(input_params=input_params_for_gitlab, parent_context_to_reuse=self.context)
-        try:
-            cmd2.run()
-        except SystemExit as e:
-            self.context.logger.info(f"second cmd exited with code={e}")
+        # self.context.logger.info("Running second RunGitlabPipelineCommand...")
+        # input_params_for_gitlab["params"]["pipeline_params"]["TEST_FILE_NAME"] = "name_from_second.txt"
+        # cmd2 = RunGitlabPipelineCommand(input_params=input_params_for_gitlab, parent_context_to_reuse=self.context)
+        # try:
+        #     cmd2.run()
+        # except SystemExit as e:
+        #     self.context.logger.info(f"second cmd exited with code={e}")
 
         # Collect output files from child processes into our folder
         self.context.logger.info("Fetching results from children...")
         shutil.copytree(Path(cmd1.context.input_param_get("paths.output.files")), Path(self.context.input_param_get("paths.output.files")).joinpath("run1_result"), dirs_exist_ok=True)
-        shutil.copytree(Path(cmd2.context.input_param_get("paths.output.files")), Path(self.context.input_param_get("paths.output.files")).joinpath("run2_result"), dirs_exist_ok=True)
+        # shutil.copytree(Path(cmd2.context.input_param_get("paths.output.files")), Path(self.context.input_param_get("paths.output.files")).joinpath("run2_result"), dirs_exist_ok=True)
         self.context.logger.info(f"cmd1 output: {cmd1.context.output_params.content}")
-        self.context.logger.info(f"cmd2 output: {cmd2.context.output_params.content}")
+        # self.context.logger.info(f"cmd2 output: {cmd2.context.output_params.content}")
 
 
 class RunGitlabPipelineCommand(ExecutionCommand):
@@ -117,11 +117,3 @@ class RunGitlabPipelineCommand(ExecutionCommand):
         self.context.output_param_set("params.build.duration", execution.get_duration_str())
         self.context.output_param_set("params.build.name", execution.get_name())
         self.context.output_params_save()
-
-
-if __name__ == '__main__':
-    #logging.basicConfig(stream=sys.stdout, format=ExecutionLogger.DEFAULT_FORMAT, level=logging.DEBUG)
-    print(1)
-    # context_path = create_execution_context(folder_path="./RESULTS_FOLDER", input_params={"systems": {"gitlab": {"url": "https://gitlab.com/"}}})
-    # command = UmbrellaCommand(context_path=context_path)
-    # command.run()
