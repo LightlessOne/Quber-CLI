@@ -1,5 +1,7 @@
 import os, sys, logging, click
 
+from quber_cli.file_processing.file_commands import DownloadFileExecutionCommand, AnalyzeFileExecutionCommand, \
+    GenerateContextFromEnv
 from quber_cli.minio_commands import ListMinioBucketObjectsCommand
 from quber_cli.sample_command import SampleStandaloneExecutionCommand, CalcCommand
 from qubership_pipelines_common_library.v1.execution.exec_logger import ExecutionLogger
@@ -40,4 +42,25 @@ def __list(context_path):
 @cli.command("umbrella-test")
 def __devtest():
     command = UmbrellaCommand(folder_path="./RESULTS_FOLDER", input_params={"systems": {"gitlab": {"url": "https://gitlab.com"}}})
+    command.run()
+
+
+@cli.command("download-file")
+@click.option('--context_path', required=True, default=DEFAULT_CONTEXT_FILE_PATH, type=str, help="Path to context")
+def __download_file(context_path):
+    command = DownloadFileExecutionCommand(context_path)
+    command.run()
+
+
+@cli.command("analyze-file")
+@click.option('--context_path', required=True, default=DEFAULT_CONTEXT_FILE_PATH, type=str, help="Path to context")
+def __download_file(context_path):
+    command = AnalyzeFileExecutionCommand(context_path)
+    command.run()
+
+
+@cli.command("generate-context-from-env")
+@click.option('--context_folder', required=True, type=str, help="Path to context folder to create")
+def __generate_context_from_env(context_folder):
+    command = GenerateContextFromEnv(input_params={"params": {"context_folder": context_folder}})
     command.run()
