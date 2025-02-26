@@ -5,7 +5,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: quber_cli
+  IMAGE_NAME: LightlessOne/quber_cli
 
 jobs:
   build-image:
