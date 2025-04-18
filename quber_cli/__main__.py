@@ -1,7 +1,7 @@
 import os, sys, logging, click
 
-from quber_cli.file_processing.file_commands import DownloadFileExecutionCommand, AnalyzeFileExecutionCommand, \
-    GenerateContextFromEnv
+from quber_cli.file_processing.file_commands import DownloadFileExecutionCommand, AnalyzeFileExecutionCommand, GenerateContextFromEnv
+from quber_cli.github.github_command import GithubRunPipeline
 from quber_cli.minio_commands import ListMinioBucketObjectsCommand
 from quber_cli.sample_command import SampleStandaloneExecutionCommand, CalcCommand
 from qubership_pipelines_common_library.v1.execution.exec_logger import ExecutionLogger
@@ -63,4 +63,11 @@ def __download_file(context_path):
 @click.option('--context_folder', required=True, type=str, help="Path to context folder to create")
 def __generate_context_from_env(context_folder):
     command = GenerateContextFromEnv(input_params={"params": {"context_folder": context_folder}})
+    command.run()
+
+
+@cli.command("github-run-pipeline")
+@click.option('--context_path', required=True, default=DEFAULT_CONTEXT_FILE_PATH, type=str, help="Path to context")
+def __trigger_github_pipeline(context_path):
+    command = GithubRunPipeline(context_path)
     command.run()
