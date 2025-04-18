@@ -1,5 +1,6 @@
 import os, sys, logging, click
 
+from quber_cli.github.github_command import GithubRunPipeline
 from quber_cli.minio_commands import ListMinioBucketObjectsCommand
 from quber_cli.sample_command import SampleStandaloneExecutionCommand, CalcCommand
 from qubership_pipelines_common_library.v1.execution.exec_logger import ExecutionLogger
@@ -40,4 +41,11 @@ def __list(context_path):
 @cli.command("umbrella-test")
 def __devtest():
     command = UmbrellaCommand(folder_path="./RESULTS_FOLDER", input_params={"systems": {"gitlab": {"url": "https://gitlab.com"}}})
+    command.run()
+
+
+@cli.command("github-run-pipeline")
+@click.option('--context_path', required=True, default=DEFAULT_CONTEXT_FILE_PATH, type=str, help="Path to context")
+def __trigger_github_pipeline(context_path):
+    command = GithubRunPipeline(context_path)
     command.run()
