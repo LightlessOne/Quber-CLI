@@ -88,23 +88,11 @@ class GithubRunPipeline(ExecutionCommand):
         self.context.logger.info(f"Pipeline status: {execution.get_status()}")
 
         if self.import_artifacts and execution.get_status() in ExecutionInfo.STATUSES_COMPLETE:
-            self.import_pipeline_data(execution)
+            # self.import_pipeline_data(execution)
             self.context.output_params.load(self.context.input_param_get("paths.output.params"))
             self.context.output_params_secure.load(self.context.input_param_get("paths.output.params_secure"))
         self._save_execution_info(execution)
         self._exit(execution.get_status() in self.success_statuses, f"Status: {execution.get_status()}")
-
-    def import_pipeline_data(self, execution: ExecutionInfo):
-        try:
-            from github_modules_ops.prepare_data import collect_stored_data_to_output, RUNTIME_DATA_DIR
-            with tempfile.TemporaryDirectory() as temp_dirname:
-                self.github_client.download_workflow_run_artifacts(execution, temp_dirname)
-                for file_path in Path(temp_dirname).iterdir():
-                    with zipfile.ZipFile(file_path) as zf:
-                        zf.extractall(Path(temp_dirname, RUNTIME_DATA_DIR, 'stored_data')) # todo: we extract to 'stored_data' to imitate gitlab executor behaviour
-                collect_stored_data_to_output(Path(temp_dirname, RUNTIME_DATA_DIR), self.context.context_path)
-        except Exception as e:
-            self.context.logger.error(f"Something went wrong when downloading pipeline artifacts - {e}")
 
     def _save_execution_info(self, execution: ExecutionInfo):
         self.context.logger.info(f"Writing GitHub workflow execution status")

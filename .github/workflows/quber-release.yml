@@ -1,0 +1,117 @@
+name: Build and Release new CLI and Image
+
+on:
+  workflow_dispatch:
+    inputs:
+      patch_version:
+        description: "Patch version"
+        default: true
+        required: true
+        type: boolean
+      use_custom_version:
+        description: "Use custom_version instead of increment"
+        default: false
+        required: true
+        type: boolean
+      custom_version:
+        description: "Specific version to release:"
+        default: 0.0.1
+        type: string
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    outputs:
+      release_version: ${{ steps.save-release-version.outputs.release_version }}
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install --user pipx
+        pipx install poetry
+
+    - name: Patch minor version
+      if: ${{ inputs.patch_version && !inputs.use_custom_version }}
+      run: poetry version patch
+
+    - name: Set specific version
+      if: ${{ inputs.patch_version && inputs.use_custom_version }}
+      run: poetry version ${{ inputs.custom_version }}
+
+    - name: Save release version
+      id: save-release-version
+      run: echo "release_version=$(poetry version --short)" >> "$GITHUB_OUTPUT"
+
+    - name: Build & Test
+      env:
+        GITLAB_QUBER_TOKEN: ${{ secrets.GITLAB_QUBER_TOKEN }}
+      run: |
+        source ./.github/scripts/build_pyz.sh
+        ./.github/scripts/run_tests.sh
+
+# todo le: commit changes with prepared app token
+
+    - name: Save built CLI
+      uses: actions/upload-artifact@v4
+      with:
+        name: quber_cli
+        path: quber_cli.pyz
+
+  create-github-release:
+    permissions:
+      contents: write
+      pull-requests: write
+    needs: [ build-and-test ]
+    uses: Netcracker/qubership-workflow-hub/.github/workflows/release-drafter.yml@v1.0.1
+    with:
+      version: ${{ needs.build-and-test.outputs.release_version }}
+      ref: ${{ github.ref_name }}
+      publish: true
+
+  upload-release-assets:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    needs: [ create-github-release, build-and-test ]
+    steps:
+    - name: Download built PYZ from current build
+      uses: actions/download-artifact@v4
+      with:
+        name: quber_cli
+
+    - name: Upload asset to last release
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: v${{ needs.build-and-test.outputs.release_version }}
+        files: quber_cli.pyz
+
+  build-docker-image:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    needs: [ build-and-test, upload-release-assets ]
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Build and Publish Docker Image
+      uses: Netcracker/qubership-workflow-hub/actions/docker-action@main
+      with:
+        ref: ${{ github.ref_name }}
+        custom-image-name: quber-cli
+        platforms: linux/amd64
+        tags: latest, v${{ needs.build-and-test.outputs.release_version }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
